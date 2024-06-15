@@ -13,7 +13,7 @@
     # KARPENTER
 
 > [!NOTE]
-> Para testar o Cilium com todas suas funcionalidas, utilizamos Cilium CNI - Parâmetros no helm [values](./helm_cilium.tf). Removendo o DaemonSet AWS CNI.
+> Para testar o Cilium com todas suas funcionalidades, utilizamos Cilium CNI - Parâmetros no helm [values](./helm_cilium.tf). Removendo o DaemonSet AWS CNI.
 
 ```sh
 kubectl delete ds aws-node -n kube-system
