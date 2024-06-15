@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rotten-potatoes-api
+  namespace: rotten-potatoes
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rotten-potatoes-api
+  template:
+    metadata:
+      labels:
+        app: rotten-potatoes-api
+      annotations:
+        policy.cilium.io/proxy-visibility: "<Egress/53/UDP/DNS>,<Egress/5432/TCP/HTTP>"
+    spec:
+      containers:
+        - name: rotten-potatoes-api
+          image: paulofponciano/rotten-potatoes-api:latest
+          imagePullPolicy: 'Always'
+          ports:
+            - name: http
+              containerPort: 8080
+          envFrom:
+            - secretRef:
+                name: postgres-secrets
+          env:
+          - name: POSTGRES_HOST
+            value: "postgres.rotten-potatoes.svc.cluster.local"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rotten-potatoes-api
+  namespace: rotten-potatoes
+spec:
+  selector:
+    app: rotten-potatoes-api
+  ports:
+    - name: http
+      port: 8080
+      targetPort: http
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: allow-front-to-back
+  namespace: rotten-potatoes
+spec:
+  endpointSelector:
+    matchLabels:
+      app: rotten-potatoes-api
+  ingress:
+  - fromEndpoints:
+    - matchLabels:
+        app: rotten-potatoes-web
+  - toPorts:
+    - ports:
+      - port: "8080"
+        protocol: TCP
+      rules:
+        http:
+        - method: "POST"
+          path: "/api"

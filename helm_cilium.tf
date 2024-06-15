@@ -6,7 +6,7 @@ resource "helm_release" "cilium" {
 
   create_namespace = true
 
-  version = "1.15.5"
+  version = "1.15.6"
 
   set {
     name  = "eni.enabled"
@@ -83,6 +83,11 @@ resource "helm_release" "cilium" {
     value = "shared"
   }
 
+  # set {
+  #   name  = "ingress.cilium.io/tls-passthrough"
+  #   value = "enabled"
+  # }
+
   set {
     name  = "hubble.relay.enabled"
     value = true
@@ -112,6 +117,12 @@ resource "helm_release" "cilium" {
     name  = "hubble.metrics.enabled"
     value = "{dns,drop,tcp,flow,port-distribution,icmp,httpV2:exemplars=true;labelsContext=source_ip\\,source_namespace\\,source_workload\\,destination_ip\\,destination_namespace\\,destination_workload\\,traffic_direction}"
   }
+
+
+  # set {
+  #   name  = "hubble.tls.enabled"
+  #   value = false
+  # }
 
   set {
     name  = "prometheus.enabled"
@@ -149,7 +160,7 @@ resource "helm_release" "cilium" {
     kubernetes_config_map.aws-auth,
     helm_release.prometheus,
     helm_release.karpenter,
-    time_sleep.wait_30_seconds_karpenter,
+    time_sleep.wait_15_seconds_karpenter,
   ]
 }
 
@@ -161,14 +172,14 @@ resource "helm_release" "tetragon" {
 
   create_namespace = true
 
-  version = "0.10.0"
+  version = "1.1.2"
 
   depends_on = [
     aws_eks_cluster.eks_cluster,
     aws_eks_node_group.cluster,
     kubernetes_config_map.aws-auth,
     helm_release.karpenter,
-    time_sleep.wait_30_seconds_karpenter,
+    time_sleep.wait_15_seconds_karpenter,
     helm_release.cilium
   ]
 }
@@ -192,7 +203,7 @@ YAML
     aws_eks_node_group.cluster,
     kubernetes_config_map.aws-auth,
     helm_release.karpenter,
-    time_sleep.wait_30_seconds_karpenter,
+    time_sleep.wait_15_seconds_karpenter,
     helm_release.cilium
   ]
 }
@@ -216,7 +227,7 @@ YAML
     aws_eks_node_group.cluster,
     kubernetes_config_map.aws-auth,
     helm_release.karpenter,
-    time_sleep.wait_30_seconds_karpenter,
+    time_sleep.wait_15_seconds_karpenter,
     helm_release.cilium
   ]
 }
@@ -248,7 +259,7 @@ YAML
     aws_eks_node_group.cluster,
     kubernetes_config_map.aws-auth,
     helm_release.karpenter,
-    time_sleep.wait_30_seconds_karpenter,
+    time_sleep.wait_15_seconds_karpenter,
     helm_release.cilium
   ]
 }

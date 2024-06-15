@@ -86,10 +86,18 @@ variable "cilium_hubble_host" {
   type = string
 }
 
-variable "addon_cni_version" {
-  type        = string
-  description = "VPC CNI Version"
+variable "grafana_host" {
+  type = string
 }
+
+variable "prometheus_host" {
+  type = string
+}
+
+# variable "addon_cni_version" {
+#   type        = string
+#   description = "VPC CNI Version"
+# }
 
 variable "addon_coredns_version" {
   type        = string

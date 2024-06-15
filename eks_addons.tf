@@ -1,17 +1,17 @@
 ## CNI
 
-resource "aws_eks_addon" "cni" {
-  cluster_name = aws_eks_cluster.eks_cluster.name
-  addon_name   = "vpc-cni"
+# resource "aws_eks_addon" "cni" {
+#   cluster_name = aws_eks_cluster.eks_cluster.name
+#   addon_name   = "vpc-cni"
 
-  addon_version     = var.addon_cni_version
-  resolve_conflicts = "OVERWRITE"
+#   addon_version     = var.addon_cni_version
+#   resolve_conflicts = "OVERWRITE"
 
-  depends_on = [
-    kubernetes_config_map.aws-auth
-  ]
+#   depends_on = [
+#     kubernetes_config_map.aws-auth
+#   ]
 
-}
+# }
 
 ## CORE DNS
 

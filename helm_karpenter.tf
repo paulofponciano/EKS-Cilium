@@ -5,7 +5,7 @@ resource "helm_release" "karpenter" {
   name       = "karpenter"
   repository = "oci://public.ecr.aws/karpenter"
   chart      = "karpenter"
-  version    = "0.36.2"
+  version    = "0.37.0"
 
   set {
     name  = "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
@@ -35,10 +35,10 @@ resource "helm_release" "karpenter" {
   depends_on = [aws_eks_node_group.cluster]
 }
 
-resource "time_sleep" "wait_30_seconds_karpenter" {
+resource "time_sleep" "wait_15_seconds_karpenter" {
   depends_on = [helm_release.karpenter]
 
-  create_duration = "30s"
+  create_duration = "15s"
 }
 
 # resource "kubectl_manifest" "karpenter_nodepool" {
@@ -99,7 +99,7 @@ YAML
   depends_on = [
     kubernetes_config_map.aws-auth,
     helm_release.karpenter,
-    time_sleep.wait_30_seconds_karpenter
+    time_sleep.wait_15_seconds_karpenter
   ]
 }
 
@@ -142,6 +142,6 @@ YAML
   depends_on = [
     kubernetes_config_map.aws-auth,
     helm_release.karpenter,
-    time_sleep.wait_30_seconds_karpenter
+    time_sleep.wait_15_seconds_karpenter
   ]
 }

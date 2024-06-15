@@ -46,6 +46,6 @@ resource "helm_release" "alb_ingress_controller" {
     aws_eks_cluster.eks_cluster,
     aws_eks_node_group.cluster,
     kubernetes_config_map.aws-auth,
-    time_sleep.wait_30_seconds_karpenter
+    time_sleep.wait_15_seconds_karpenter
   ]
 }

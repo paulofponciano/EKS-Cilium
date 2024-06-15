@@ -1,11 +1,11 @@
 ## PROJECT BASE
 
-cluster_name = "pegasus-2"
+cluster_name = "pegasus"
 environment  = "staging"
 project      = "devops"
-aws_region   = "us-west-2"
-az1          = "us-west-2a"
-az2          = "us-west-2b"
+aws_region   = "us-east-2"
+az1          = "us-east-2a"
+az2          = "us-east-2b"
 
 ## CLUSTER OPTIONS
 
@@ -26,7 +26,7 @@ enabled_cluster_log_types = [
 ]
 
 addon_csi_version       = "v1.29.1-eksbuild.1"
-addon_cni_version       = "v1.17.1-eksbuild.1"
+# addon_cni_version       = "v1.17.1-eksbuild.1"
 addon_coredns_version   = "v1.11.1-eksbuild.6"
 addon_kubeproxy_version = "v1.29.1-eksbuild.2"
 
@@ -37,6 +37,8 @@ enable_cross_zone_lb = "true"
 nlb_ingress_type     = "network"
 proxy_protocol_v2    = "false"
 cilium_hubble_host   = "hubble.pauloponciano.digital"
+grafana_host         = "grafana.pauloponciano.digital"
+prometheus_host      = "prometheus.pauloponciano.digital"
 
 ## KARPENTER OPTIONS
 
@@ -55,8 +57,8 @@ karpenter_capacity_type = [
   "spot"
 ]
 karpenter_azs = [
-  "us-west-2a",
-  "us-west-2b"
+  "us-east-2a",
+  "us-east-2b"
 ]
 
 ## NETWORKING
