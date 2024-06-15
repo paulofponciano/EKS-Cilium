@@ -83,11 +83,6 @@ resource "helm_release" "cilium" {
     value = "shared"
   }
 
-  # set {
-  #   name  = "ingress.cilium.io/tls-passthrough"
-  #   value = "enabled"
-  # }
-
   set {
     name  = "hubble.relay.enabled"
     value = true
@@ -118,12 +113,6 @@ resource "helm_release" "cilium" {
     value = "{dns,drop,tcp,flow,port-distribution,icmp,httpV2:exemplars=true;labelsContext=source_ip\\,source_namespace\\,source_workload\\,destination_ip\\,destination_namespace\\,destination_workload\\,traffic_direction}"
   }
 
-
-  # set {
-  #   name  = "hubble.tls.enabled"
-  #   value = false
-  # }
-
   set {
     name  = "prometheus.enabled"
     value = true
@@ -144,15 +133,30 @@ resource "helm_release" "cilium" {
     value = true
   }
 
-  #   set {
-  #     name  = "extraConfig.enable-envoy-config"
-  #     value = "true"
-  #   }
-
   set {
     name  = "loadBalancer.l7.backend"
     value = "envoy"
   }
+
+  # set {
+  #   name  = "cni.chainingMode"
+  #   value = "aws-cni"
+  # }
+
+  # set {
+  #   name  = "cni.exclusive"
+  #   value = "false"
+  # }
+
+  # set {
+  #   name  = "enableIPv4Masquerade"
+  #   value = "false"
+  # }
+
+  # set {
+  #   name  = "endpointRoutes.enabled"
+  #   value = "true"
+  # }
 
   depends_on = [
     aws_eks_cluster.eks_cluster,
