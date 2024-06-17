@@ -1,13 +1,9 @@
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: mysql
----
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: mysql
-  namespace: mysql
+  namespace: o11y
 spec:
   replicas: 1
   selector:
@@ -32,7 +28,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: mysql
-  namespace: mysql
+  namespace: o11y
   annotations:
     service.cilium.io/lb-l7: enabled
     service.cilium.io/lb-l7-algorithm: round_robin

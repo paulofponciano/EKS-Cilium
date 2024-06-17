@@ -4,7 +4,7 @@ metadata:
   labels:
     app: database-service
   name: database-service
-  namespace: database-service
+  namespace: o11y
 spec:
   replicas: 1
   selector:
@@ -29,9 +29,9 @@ spec:
             cpu: "500m"
         env:
         - name: OTLP
-          value: "otel-collector.otel-collector.svc.cluster.local"
+          value: "otel-collector.o11y.svc.cluster.local"
         - name: MYSQL_HOST
-          value: "mysql.mysql.svc.cluster.local"
+          value: "mysql.o11y.svc.cluster.local"
         - name: MYSQL_PORT
           value: "3306"
 ---
@@ -39,7 +39,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: database-service
-  namespace: database-service
+  namespace: o11y
   annotations:
     service.cilium.io/lb-l7: enabled
     service.cilium.io/lb-l7-algorithm: round_robin

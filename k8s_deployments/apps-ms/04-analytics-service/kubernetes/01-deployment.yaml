@@ -4,7 +4,7 @@ metadata:
   labels:
     app: analytics-service
   name: analytics-service
-  namespace: analytics-service
+  namespace: o11y
 spec:
   replicas: 1
   selector:
@@ -31,13 +31,13 @@ spec:
         - name: OTLP
           value: "172.28.13.88:55680"
         - name: MYSQL_HOST
-          value: "mysql.mysql.svc.cluster.local"
+          value: "mysql.o11y.svc.cluster.local"
         - name: MYSQL_PORT
           value: "3306"
         - name: OTEL_EXPORTER
           value: "otlp"
         - name: OTEL_EXPORTER_OTLP_ENDPOINT
-          value: "http://otel-collector.otel-collector.svc.cluster.local:55680"
+          value: "http://otel-collector.o11y.svc.cluster.local:55680"
         - name: OTEL_RESOURCE_ATTRIBUTES
           value: "service.name=analytics-service"
 ---
@@ -45,7 +45,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: analytics-service
-  namespace: analytics-service
+  namespace: o11y
   annotations:
     service.cilium.io/lb-l7: enabled
     service.cilium.io/lb-l7-algorithm: round_robin

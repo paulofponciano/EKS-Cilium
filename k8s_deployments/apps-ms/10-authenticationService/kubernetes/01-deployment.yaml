@@ -4,7 +4,7 @@ metadata:
   labels:
     app: authentication-service
   name: authentication-service
-  namespace: authentication-service
+  namespace: o11y
 spec:
   replicas: 1
   selector:
@@ -29,18 +29,18 @@ spec:
             cpu: "500m"
         env:
         - name: OTLP
-          value: "otel-collector.otel-collector.svc.cluster.local"
+          value: "otel-collector.o11y.svc.cluster.local"
         - name: RECOMMEND
-          value: "recommendation-service.recommendation-service.svc.cluster.local"
+          value: "recommendation-service.o11y.svc.cluster.local"
         - name: LOGS
-          value: "analytics-service.analytics-service.svc.cluster.local" # Analytics Service
+          value: "analytics-service.o11y.svc.cluster.local" # Analytics Service
         
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: authentication-service
-  namespace: authentication-service
+  namespace: o11y
   annotations:
     service.cilium.io/lb-l7: enabled
     service.cilium.io/lb-l7-algorithm: round_robin

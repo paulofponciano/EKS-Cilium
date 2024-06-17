@@ -1,8 +1,8 @@
 #!/bin/bash
 
-# kubectl apply -f ./00-fluentBit/kubernetes
-# kubectl apply -f ./01-data-prepper/kubernetes
-# kubectl apply -f ./02-otel-collector/kubernetes
+kubectl apply -f ./00-fluentBit/kubernetes
+kubectl apply -f ./01-data-prepper/kubernetes
+kubectl apply -f ./02-otel-collector/kubernetes
 kubectl apply -f ./03-mysql/kubernetes
 kubectl apply -f ./04-analytics-service/kubernetes
 kubectl apply -f ./05-databaseService/kubernetes
