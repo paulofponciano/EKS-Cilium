@@ -22,6 +22,17 @@ resource "aws_eks_addon" "coredns" {
   addon_version     = var.addon_coredns_version
   resolve_conflicts = "OVERWRITE"
 
+  # configuration_values = jsonencode({
+  #   tolerations : [
+  #     {
+  #       key : "role",
+  #       operator : "Equal",
+  #       value : "core",
+  #       effect : "NoExecute"
+  #     }
+  #   ]
+  # })
+
   depends_on = [
     aws_eks_node_group.cluster,
     kubernetes_config_map.aws-auth
@@ -37,6 +48,17 @@ resource "aws_eks_addon" "kubeproxy" {
   addon_version     = var.addon_kubeproxy_version
   resolve_conflicts = "OVERWRITE"
 
+  # configuration_values = jsonencode({
+  #   tolerations : [
+  #     {
+  #       key : "role",
+  #       operator : "Equal",
+  #       value : "core",
+  #       effect : "NoExecute"
+  #     }
+  #   ]
+  # })
+
   depends_on = [
     kubernetes_config_map.aws-auth
   ]
@@ -50,6 +72,17 @@ resource "aws_eks_addon" "csi_driver" {
 
   addon_version     = var.addon_csi_version
   resolve_conflicts = "OVERWRITE"
+
+  # configuration_values = jsonencode({
+  #   tolerations : [
+  #     {
+  #       key : "role",
+  #       operator : "Equal",
+  #       value : "core",
+  #       effect : "NoExecute"
+  #     }
+  #   ]
+  # })
 
   depends_on = [
     aws_eks_node_group.cluster,

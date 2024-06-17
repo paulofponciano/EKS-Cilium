@@ -1,5 +1,5 @@
 resource "aws_lb" "cilium_ingress" {
-  name                             = join("-", [var.cluster_name, var.environment, "nlb-ingress"])
+  name                             = join("-", [var.cluster_name, var.environment, "ingress"])
   internal                         = var.nlb_ingress_internal
   load_balancer_type               = var.nlb_ingress_type
   enable_cross_zone_load_balancing = var.enable_cross_zone_lb
@@ -10,7 +10,7 @@ resource "aws_lb" "cilium_ingress" {
   ]
 
   tags = {
-    Name                                        = join("-", [var.cluster_name, var.environment, "nlb-ingress"])
+    Name                                        = join("-", [var.cluster_name, var.environment, "ingress"])
     "kubernetes.io/cluster/${var.cluster_name}" = "shared"
   }
 }

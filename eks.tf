@@ -85,6 +85,12 @@ resource "aws_eks_node_group" "cluster" {
     ]
   }
 
+  # taint {
+  #   key    = "role"
+  #   value  = "core"
+  #   effect = "NO_EXECUTE"
+  # }
+
   depends_on = [
     kubernetes_config_map.aws-auth
   ]

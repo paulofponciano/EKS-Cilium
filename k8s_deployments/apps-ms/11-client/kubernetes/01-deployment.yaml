@@ -1,0 +1,110 @@
+---
+##################################################################################################
+# Client Service - React
+##################################################################################################
+apiVersion: v1
+kind: Service
+metadata:
+  name: client-react
+  namespace: client-react
+  annotations:
+    service.cilium.io/lb-l7: enabled
+    service.cilium.io/lb-l7-algorithm: round_robin
+  labels:
+    app: client-react
+    service: client-react
+    
+spec:
+  ports:
+  - port: 5000
+    name: http
+  selector:
+    app: client-react
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: client-react
+  namespace: client-react
+  labels:
+    app: client-react
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: client-react
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: client-react
+        version: v1
+    spec:
+      containers:
+      - name: client-react
+        image: paulofponciano/sample-app-ms-o11y-k8s:client-service
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 5000
+        volumeMounts:
+        - name: tmp
+          mountPath: /tmp
+        env:
+        - name: OTLP
+          value: "otel-collector.otel-collector.svc.cluster.local"
+        - name: RECOMMEND
+          value: "recommendation-service.recommendation-service.svc.cluster.local"
+        - name: LOGS
+          value: "analytics-service.analytics-service.svc.cluster.local" # Analytics Service
+        - name: ORDER
+          value: "order-service.order-service.svc.cluster.local"
+        - name: INVENTORY
+          value: "inventory-service.inventory-service.svc.cluster.local"
+        - name: PAYMENT
+          value: "payment-service.payment-service.svc.cluster.local"
+        - name: AUTH
+          value: "authentication-service.authentication-service.svc.cluster.local"
+        - name: MYSQL_HOST
+          value: "mysql.mysql.svc.cluster.local"
+        - name: MYSQL_PORT
+          value: "3306"
+      volumes:
+      - name: tmp
+        emptyDir: {}
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: client-gateway
+  namespace: client-react
+spec:
+  selector:
+    istio: ingressgateway # use istio default controller
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "*"
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: client-react
+  namespace: client-react
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - client-gateway
+  http:
+  - match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        host: client-react
+        port:
+          number: 5000

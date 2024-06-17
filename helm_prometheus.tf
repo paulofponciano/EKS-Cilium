@@ -7,6 +7,11 @@ resource "helm_release" "prometheus" {
 
   version = "60.1.0"
 
+  set {
+    name  = "fullnameOverride"
+    value = "prometheus"
+  }
+
   values = [
     "${file("./prometheus/values.yaml")}"
   ]
@@ -19,6 +24,55 @@ resource "helm_release" "prometheus" {
     kubectl_manifest.karpenter-nodeclass,
     kubectl_manifest.karpenter-nodepool-default,
     time_sleep.wait_15_seconds_karpenter
+  ]
+}
+
+resource "kubernetes_secret" "prometheus_scrape_configs" {
+  metadata {
+    name      = "additional-scrape-configs"
+    namespace = "prometheus"
+  }
+
+  data = {
+    "scrape_configs.yaml" = "${file("${path.module}/prometheus/scrape_configs.yaml")}"
+  }
+
+  type = "Opaque"
+
+  depends_on = [
+    helm_release.prometheus
+  ]
+}
+
+resource "kubectl_manifest" "prometheus_all_pod_monitor" {
+
+  count = 0
+
+  yaml_body = <<YAML
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: generic-stats-monitor
+  namespace: prometheus
+  labels:
+    monitoring: istio-proxies
+    release: istio
+spec:
+  selector:
+    matchExpressions:
+    - {key: istio-prometheus-ignore, operator: DoesNotExist}
+  namespaceSelector:
+    any: true
+  jobLabel: generic-stats
+  podMetricsEndpoints:
+  - path: /metrics
+    interval: 15s
+    relabelings:
+    - action: keep
+YAML
+
+  depends_on = [
+    helm_release.prometheus
   ]
 }
 
@@ -81,7 +135,6 @@ YAML
     aws_eks_node_group.cluster,
     kubernetes_config_map.aws-auth,
     helm_release.karpenter,
-    time_sleep.wait_15_seconds_karpenter,
-    helm_release.cilium
+    time_sleep.wait_15_seconds_karpenter
   ]
 }

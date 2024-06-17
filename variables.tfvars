@@ -1,6 +1,6 @@
 ## PROJECT BASE
 
-cluster_name = "pegasus"
+cluster_name = "pegasus-cilium"
 environment  = "staging"
 project      = "devops"
 aws_region   = "us-east-2"
@@ -14,7 +14,7 @@ k8s_version = "1.29"
 endpoint_private_access = true
 
 instance_type = [
-  "m5a.large"
+  "t3a.medium"
 ]
 
 desired_size = "1"

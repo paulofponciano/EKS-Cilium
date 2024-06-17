@@ -31,9 +31,9 @@ kind: Service
 metadata:
   name: rotten-potatoes-web
   namespace: rotten-potatoes
-  annotations:
-    service.cilium.io/lb-l7: enabled
-    service.cilium.io/lb-l7-algorithm: round_robin
+  # annotations:
+  #   service.cilium.io/lb-l7: enabled
+  #   service.cilium.io/lb-l7-algorithm: round_robin
 spec:
   selector:
     app: rotten-potatoes-web

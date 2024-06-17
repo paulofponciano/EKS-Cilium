@@ -82,21 +82,21 @@ spec:
     app: postgres
   ports:
     - port: 5432
----
-apiVersion: cilium.io/v2
-kind: CiliumNetworkPolicy
-metadata:
-  name: allow-back-to-db
-  namespace: rotten-potatoes
-spec:
-  endpointSelector:
-    matchLabels:
-      app: postgres
-  ingress:
-  - fromEndpoints:
-    - matchLabels:
-        app: rotten-potatoes-api
-  - toPorts:
-    - ports:
-      - port: "5432"
-        protocol: TCP
+# ---
+# apiVersion: cilium.io/v2
+# kind: CiliumNetworkPolicy
+# metadata:
+#   name: allow-back-to-db
+#   namespace: rotten-potatoes
+# spec:
+#   endpointSelector:
+#     matchLabels:
+#       app: postgres
+#   ingress:
+#   - fromEndpoints:
+#     - matchLabels:
+#         app: rotten-potatoes-api
+#   - toPorts:
+#     - ports:
+#       - port: "5432"
+#         protocol: TCP
