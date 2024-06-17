@@ -12,8 +12,8 @@ spec:
     metadata:
       labels:
         app: rotten-potatoes-api
-      annotations:
-        policy.cilium.io/proxy-visibility: "<Egress/53/UDP/DNS>,<Egress/5432/TCP/HTTP>"
+      # annotations:
+      #   policy.cilium.io/proxy-visibility: "<Egress/53/UDP/DNS>,<Egress/5432/TCP/HTTP>"
     spec:
       containers:
         - name: rotten-potatoes-api
