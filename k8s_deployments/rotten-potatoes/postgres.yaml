@@ -77,6 +77,9 @@ kind: Service
 metadata:
   name: postgres
   namespace: rotten-potatoes
+  # annotations:
+  #   service.cilium.io/lb-l7: enabled
+  #   service.cilium.io/lb-l7-algorithm: round_robin
 spec:
   selector:
     app: postgres

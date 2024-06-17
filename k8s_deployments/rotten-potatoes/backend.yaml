@@ -13,7 +13,7 @@ spec:
       labels:
         app: rotten-potatoes-api
       # annotations:
-      #   policy.cilium.io/proxy-visibility: "<Egress/53/UDP/DNS>,<Egress/5432/TCP/HTTP>"
+      #   policy.cilium.io/proxy-visibility: "<Egress/53/UDP/DNS>,<Egress/5432/TCP/PostgreSQL>"
     spec:
       containers:
         - name: rotten-potatoes-api
