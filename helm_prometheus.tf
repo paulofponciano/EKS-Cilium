@@ -123,7 +123,7 @@ spec:
       paths:
       - backend:
           service:
-            name: prometheus-kube-prometheus-prometheus
+            name: prometheus-prometheus
             port:
               number: 9090
         path: /
