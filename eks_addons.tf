@@ -5,7 +5,7 @@
 #   addon_name   = "vpc-cni"
 
 #   addon_version     = var.addon_cni_version
-#   resolve_conflicts = "OVERWRITE"
+#   resolve_conflicts_on_create = "OVERWRITE"
 
 #   depends_on = [
 #     kubernetes_config_map.aws-auth
@@ -20,7 +20,7 @@ resource "aws_eks_addon" "coredns" {
   addon_name   = "coredns"
 
   addon_version     = var.addon_coredns_version
-  resolve_conflicts = "OVERWRITE"
+  resolve_conflicts_on_create = "OVERWRITE"
 
   # configuration_values = jsonencode({
   #   tolerations : [
@@ -46,7 +46,7 @@ resource "aws_eks_addon" "kubeproxy" {
   addon_name   = "kube-proxy"
 
   addon_version     = var.addon_kubeproxy_version
-  resolve_conflicts = "OVERWRITE"
+  resolve_conflicts_on_create = "OVERWRITE"
 
   # configuration_values = jsonencode({
   #   tolerations : [
@@ -71,7 +71,7 @@ resource "aws_eks_addon" "csi_driver" {
   addon_name   = "aws-ebs-csi-driver"
 
   addon_version     = var.addon_csi_version
-  resolve_conflicts = "OVERWRITE"
+  resolve_conflicts_on_create = "OVERWRITE"
 
   # configuration_values = jsonencode({
   #   tolerations : [

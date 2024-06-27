@@ -52,7 +52,7 @@ resource "aws_route_table_association" "private_az1" {
 
 resource "aws_route_table_association" "private_az2" {
   subnet_id      = aws_subnet.private_subnet_az2.id
-  route_table_id = aws_route_table.nat_az1.id # modify to nat_az2 in the HA scenario
+  route_table_id = aws_route_table.nat_az1.id
 }
 
 ## PUBLIC SUBNETS
@@ -93,7 +93,7 @@ resource "aws_route_table_association" "public_az1" {
 }
 
 resource "aws_route_table_association" "public_az2" {
-  subnet_id      = aws_subnet.public_subnet_az2.id 
+  subnet_id      = aws_subnet.public_subnet_az2.id
   route_table_id = aws_route_table.igw_route_table.id
 }
 
@@ -128,18 +128,9 @@ resource "aws_route" "public_internet_access" {
 ## NGW
 
 resource "aws_eip" "vpc_iep_1" {
-  vpc = true
+  domain = "vpc"
   tags = {
     Name      = join("-", [var.cluster_name, var.environment, "eip-ngw", var.az1])
-    Project   = "${var.project}"
-    Terraform = true
-  }
-}
-
-resource "aws_eip" "vpc_iep_2" {
-  vpc = true
-  tags = {
-    Name      = join("-", [var.cluster_name, var.environment, "eip-ngw", var.az2])
     Project   = "${var.project}"
     Terraform = true
   }
@@ -156,46 +147,8 @@ resource "aws_nat_gateway" "nat_az1" {
   }
 }
 
-resource "aws_route_table" "nat_az1" {
-  vpc_id = aws_vpc.cluster_vpc.id
-
-  tags = {
-    Name      = join("-", [var.cluster_name, var.environment, "private-rtb", var.az1])
-    Project   = "${var.project}"
-    Terraform = true
-  }
-}
-
 resource "aws_route" "nat_access_az1" {
   route_table_id         = aws_route_table.nat_az1.id
   destination_cidr_block = "0.0.0.0/0"
   nat_gateway_id         = aws_nat_gateway.nat_az1.id
 }
-/* <- uncomment this block in the ha scenario
-resource "aws_nat_gateway" "nat_az2" {
-  allocation_id = aws_eip.vpc_iep_2.id
-  subnet_id     = aws_subnet.public_subnet_az2.id
-
-  tags = {
-    Name      = join("-", [var.cluster_name, var.environment, "ngw", var.az2])
-    Project   = "${var.project}"
-    Terraform = true
-  }
-}
-
-resource "aws_route_table" "nat_az2" {
-  vpc_id = aws_vpc.cluster_vpc.id
-
-  tags = {
-    Name      = join("-", [var.cluster_name, var.environment, "private-rtb", var.az2])
-    Project   = "${var.project}"
-    Terraform = true
-  }
-}
-
-resource "aws_route" "nat_access_az2" {
-  route_table_id         = aws_route_table.nat_az2.id
-  destination_cidr_block = "0.0.0.0/0"
-  nat_gateway_id         = aws_nat_gateway.nat_az2.id
-}
-*/
