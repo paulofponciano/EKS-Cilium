@@ -1,7 +1,7 @@
 import http from 'k6/http';
 
 export default function () {
-  const url = 'http://health.pauloponciano.digital/calculator';
+  const url = 'http://health-api.pauloponciano.digital/calculator';
   const payload = JSON.stringify({
     age: 26,
     weight: 90.0,
