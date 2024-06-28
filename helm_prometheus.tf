@@ -135,6 +135,7 @@ YAML
     aws_eks_node_group.cluster,
     kubernetes_config_map.aws-auth,
     helm_release.karpenter,
-    time_sleep.wait_15_seconds_karpenter
+    time_sleep.wait_15_seconds_karpenter,
+    helm_release.cilium
   ]
 }
