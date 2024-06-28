@@ -128,7 +128,7 @@ resource "aws_route" "public_internet_access" {
 ## NGW
 
 resource "aws_eip" "vpc_iep_1" {
-  domain = "vpc"
+  vpc = true
   tags = {
     Name      = join("-", [var.cluster_name, var.environment, "eip-ngw", var.az1])
     Project   = "${var.project}"
@@ -142,6 +142,16 @@ resource "aws_nat_gateway" "nat_az1" {
 
   tags = {
     Name      = join("-", [var.cluster_name, var.environment, "ngw", var.az1])
+    Project   = "${var.project}"
+    Terraform = true
+  }
+}
+
+resource "aws_route_table" "nat_az1" {
+  vpc_id = aws_vpc.cluster_vpc.id
+
+  tags = {
+    Name      = join("-", [var.cluster_name, var.environment, "private-rtb", var.az1])
     Project   = "${var.project}"
     Terraform = true
   }
