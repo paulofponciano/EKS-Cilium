@@ -286,40 +286,105 @@ resource "aws_iam_role_policy_attachment" "eks-cluster-service" {
 
 ## KARPENTER CONTROLLER
 
-data "aws_iam_policy_document" "karpenter_controller_assume_role_policy" {
-  statement {
-    actions = ["sts:AssumeRoleWithWebIdentity"]
-    effect  = "Allow"
+# data "aws_iam_policy_document" "karpenter_controller_assume_role_policy" {
+#   statement {
+#     actions = ["sts:AssumeRoleWithWebIdentity"]
+#     effect  = "Allow"
 
+#     condition {
+#       test     = "StringEquals"
+#       variable = "${replace(aws_iam_openid_connect_provider.eks.url, "https://", "")}:sub"
+#       values   = ["system:serviceaccount:karpenter:karpenter"]
+#     }
+
+#     principals {
+#       identifiers = [aws_iam_openid_connect_provider.eks.arn]
+#       type        = "Federated"
+#     }
+#   }
+# }
+
+# resource "aws_iam_role" "karpenter_controller" {
+#   assume_role_policy = data.aws_iam_policy_document.karpenter_controller_assume_role_policy.json
+#   name               = join("-", ["role", var.cluster_name, var.environment, "karpenter"])
+# }
+
+# resource "aws_iam_policy" "karpenter_controller" {
+#   policy = file("karpenter/karpenter-controller-trust-policy.json")
+#   name   = join("-", ["policy", var.cluster_name, var.environment, "karpenter"])
+# }
+
+# resource "aws_iam_role_policy_attachment" "aws_load_balancer_controller_attach" {
+#   role       = aws_iam_role.karpenter_controller.name
+#   policy_arn = aws_iam_policy.karpenter_controller.arn
+# }
+
+# resource "aws_iam_instance_profile" "karpenter" {
+#   name = "KarpenterNodeInstanceProfile-${var.cluster_name}"
+#   role = aws_iam_role.eks_nodes_roles.name
+# }
+
+## LOKI / TEMPO
+
+resource "aws_iam_policy" "loki_tempo_policy" {
+  name        = "LokiTempoPolicy-${var.cluster_name}"
+  description = "Permissions for Loki and Tempo to access S3 buckets"
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Sid    = "AllowLokiandTempoBucketonK8s",
+        Effect = "Allow",
+        Action = [
+          "s3:PutObject",
+          "s3:GetObject",
+          "s3:AbortMultipartUpload",
+          "s3:ListBucket",
+          "s3:DeleteObject",
+          "s3:GetObjectVersion",
+          "s3:ListMultipartUploadParts",
+          "s3:GetObjectTagging",
+          "s3:PutObjectTagging"
+        ],
+        Resource = [
+          "arn:aws:s3:::${var.loki_bucket_name}/*",
+          "arn:aws:s3:::${var.loki_bucket_name}",
+          "arn:aws:s3:::${var.tempo_bucket_name}/*",
+          "arn:aws:s3:::${var.tempo_bucket_name}"
+        ]
+      }
+    ]
+  })
+}
+
+data "aws_iam_policy_document" "assume_role_policy" {
+  statement {
+    effect  = "Allow"
+    actions = ["sts:AssumeRoleWithWebIdentity"]
+    principals {
+      type        = "Federated"
+      identifiers = [aws_iam_openid_connect_provider.eks.arn]
+    }
     condition {
       test     = "StringEquals"
       variable = "${replace(aws_iam_openid_connect_provider.eks.url, "https://", "")}:sub"
-      values   = ["system:serviceaccount:karpenter:karpenter"]
-    }
-
-    principals {
-      identifiers = [aws_iam_openid_connect_provider.eks.arn]
-      type        = "Federated"
+      values = [
+        "system:serviceaccount:prometheus:loki-sa",
+        "system:serviceaccount:prometheus:tempo-sa"
+      ]
     }
   }
 }
 
-resource "aws_iam_role" "karpenter_controller" {
-  assume_role_policy = data.aws_iam_policy_document.karpenter_controller_assume_role_policy.json
-  name               = join("-", ["role", var.cluster_name, var.environment, "karpenter"])
+resource "aws_iam_role" "loki_tempo_service_account_role" {
+  name = "CustomRoleTempoandLokionK8s-${var.cluster_name}"
+
+  assume_role_policy = data.aws_iam_policy_document.assume_role_policy.json
 }
 
-resource "aws_iam_policy" "karpenter_controller" {
-  policy = file("karpenter/karpenter-controller-trust-policy.json")
-  name   = join("-", ["policy", var.cluster_name, var.environment, "karpenter"])
+resource "aws_iam_role_policy_attachment" "loki_tempo_policy_attachment" {
+  role       = aws_iam_role.loki_tempo_service_account_role.name
+  policy_arn = aws_iam_policy.loki_tempo_policy.arn
 }
 
-resource "aws_iam_role_policy_attachment" "aws_load_balancer_controller_attach" {
-  role       = aws_iam_role.karpenter_controller.name
-  policy_arn = aws_iam_policy.karpenter_controller.arn
-}
-
-resource "aws_iam_instance_profile" "karpenter" {
-  name = "KarpenterNodeInstanceProfile-${var.cluster_name}"
-  role = aws_iam_role.eks_nodes_roles.name
-}

@@ -50,20 +50,28 @@ variable "max_size" {
   type = string
 }
 
-variable "karpenter_instance_class" {
-  type = list
+# variable "karpenter_instance_class" {
+#   type = list(any)
+# }
+
+# variable "karpenter_instance_size" {
+#   type = list(any)
+# }
+
+# variable "karpenter_capacity_type" {
+#   type = list(any)
+# }
+
+# variable "karpenter_azs" {
+#   type = list(any)
+# }
+
+variable "loki_bucket_name" {
+  type = string
 }
 
-variable "karpenter_instance_size" {
-  type = list 
-}
-
-variable "karpenter_capacity_type" {
-  type = list
-}
-
-variable "karpenter_azs" {
-  type = list
+variable "tempo_bucket_name" {
+  type = string
 }
 
 variable "nlb_ingress_internal" {

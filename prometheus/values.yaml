@@ -13,6 +13,53 @@ prometheus:
     serviceMonitorNamespaceSelector:
       any: true
     serviceMonitorSelector: {}
+    additionalScrapeConfigs:
+      - job_name: 'kubernetes-pods'
+        honor_labels: true
+        kubernetes_sd_configs:
+          - role: pod
+        relabel_configs:
+          - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
+            action: keep
+            regex: true
+          - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape_slow]
+            action: drop
+            regex: true
+          - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scheme]
+            action: replace
+            regex: (https?)
+            target_label: __scheme__
+          - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_path]
+            action: replace
+            target_label: __metrics_path__
+            regex: (.+)
+          - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_port, __meta_kubernetes_pod_ip]
+            action: replace
+            regex: (\d+);(([A-Fa-f0-9]{1,4}::?){1,7}[A-Fa-f0-9]{1,4})
+            replacement: '[$2]:$1'
+            target_label: __address__
+          - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_port, __meta_kubernetes_pod_ip]
+            action: replace
+            regex: (\d+);((([0-9]+?)(\.|$)){4})
+            replacement: $2:$1
+            target_label: __address__
+          - action: labelmap
+            regex: __meta_kubernetes_pod_annotation_prometheus_io_param_(.+)
+            replacement: __param_$1
+          - action: labelmap
+            regex: __meta_kubernetes_pod_label_(.+)
+          - source_labels: [__meta_kubernetes_namespace]
+            action: replace
+            target_label: namespace
+          - source_labels: [__meta_kubernetes_pod_name]
+            action: replace
+            target_label: pod
+          - source_labels: [__meta_kubernetes_pod_phase]
+            regex: Pending|Succeeded|Failed|Completed
+            action: drop
+          - source_labels: [__meta_kubernetes_pod_node_name]
+            action: replace
+            target_label: node
 
 prometheusOperator:
   enabled: true
@@ -24,3 +71,41 @@ prometheusOperator:
 
 grafana:
   enabled: true
+  additionalDataSources:
+    - name: Prometheus
+      type: prometheus
+      uid: prometheus
+      access: proxy
+      url: http://prometheus-kube-prometheus-prometheus:9090
+      jsonData:
+        exemplarTraceIdDestinations:
+          - name: trace_id
+            datasourceUid: tempo
+            urlDisplayLabel: View in Tempo
+    - name: Loki
+      type: loki
+      uid: loki
+      access: proxy
+      url: http://loki-loki-distributed-gateway
+      jsonData:
+        derivedFields:
+          - name: trace_id
+            datasourceUid: tempo
+            matcherRegex: "trace_id=(\\w+)"
+            url: '$${__value.raw}'
+    - name: Tempo
+      type: tempo
+      uid: tempo
+      access: proxy
+      url: http://tempo-query-frontend:3100
+      jsonData:
+        httpMethod: GET
+        # Tempo redirects to Loki logs by specific trace_id
+        tracesToLogs:
+          datasourceUid: 'loki'
+          tags: [ 'app' ]
+          spanStartTimeShift: 1s
+          spandEndTimeShift: 1s
+          lokiSearch: true
+        serviceMap:
+          datasourceUid: 'prometheus'

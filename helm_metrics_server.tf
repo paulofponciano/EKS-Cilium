@@ -13,8 +13,8 @@ resource "helm_release" "metrics_server" {
         aws_eks_cluster.eks_cluster,
         aws_eks_node_group.cluster,
         kubernetes_config_map.aws-auth,
-        helm_release.karpenter,
-        time_sleep.wait_15_seconds_karpenter,
+        # helm_release.karpenter,
+        # time_sleep.wait_15_seconds_karpenter,
         helm_release.cilium
     ]
 }

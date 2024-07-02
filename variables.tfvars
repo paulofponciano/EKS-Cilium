@@ -14,21 +14,22 @@ k8s_version = "1.29"
 endpoint_private_access = true
 
 instance_type = [
-  "t3a.medium"
+  "m5.large"
 ]
 
-desired_size = "1"
-min_size     = "1"
-max_size     = "1"
+desired_size = "3"
+min_size     = "3"
+max_size     = "3"
 
 enabled_cluster_log_types = [
   "api", "audit", "authenticator", "controllerManager", "scheduler"
 ]
 
-addon_csi_version       = "v1.29.1-eksbuild.1"
-# addon_cni_version       = "v1.17.1-eksbuild.1"
-addon_coredns_version   = "v1.11.1-eksbuild.6"
-addon_kubeproxy_version = "v1.29.1-eksbuild.2"
+addon_csi_version = "v1.32.0-eksbuild.1"
+# addon_cni_version       = "v1.18.2-eksbuild.1"
+addon_coredns_version   = "v1.11.1-eksbuild.9"
+#addon_kubeproxy_version = "v1.30.0-eksbuild.3"
+addon_kubeproxy_version = "v1.29.3-eksbuild.5"
 
 ## INGRESS OPTIONS (CILIUM NLB)
 
@@ -42,24 +43,27 @@ prometheus_host      = "prometheus.pauloponciano.digital"
 
 ## KARPENTER OPTIONS
 
-## If you change the number of items in the lists, you need to check the file helm_karpenter.tf > resource "kubectl_manifest" "karpenter-nodepool-default"
+# karpenter_instance_class = [
+#   "m5",
+#   "c5",
+#   "t3a"
+# ]
+# karpenter_instance_size = [
+#   "large",
+#   "2xlarge"
+# ]
+# karpenter_capacity_type = [
+#   "spot"
+# ]
+# karpenter_azs = [
+#   "us-east-2a",
+#   "us-east-2b"
+# ]
 
-karpenter_instance_class = [
-  "m5",
-  "c5",
-  "t3a"
-]
-karpenter_instance_size = [
-  "large",
-  "2xlarge"
-]
-karpenter_capacity_type = [
-  "spot"
-]
-karpenter_azs = [
-  "us-east-2a",
-  "us-east-2b"
-]
+## LOKI / TEMPO OPTIONS
+
+loki_bucket_name  = "loki2-s3-paulop"
+tempo_bucket_name = "tempo2-s3-paulop"
 
 ## NETWORKING
 

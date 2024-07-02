@@ -5,12 +5,8 @@ resource "helm_release" "prometheus" {
   namespace        = "prometheus"
   create_namespace = true
 
-  version = "60.1.0"
-
-  set {
-    name  = "fullnameOverride"
-    value = "prometheus"
-  }
+  #version = "60.1.0"
+  version = "56.6.0"
 
   values = [
     "${file("./prometheus/values.yaml")}"
@@ -20,29 +16,13 @@ resource "helm_release" "prometheus" {
     aws_eks_cluster.eks_cluster,
     aws_eks_node_group.cluster,
     kubernetes_config_map.aws-auth,
-    helm_release.karpenter,
-    kubectl_manifest.karpenter-nodeclass,
-    kubectl_manifest.karpenter-nodepool-default,
-    time_sleep.wait_15_seconds_karpenter
+    # helm_release.karpenter,
+    # kubectl_manifest.karpenter-nodeclass,
+    # kubectl_manifest.karpenter-nodepool-default,
+    # time_sleep.wait_15_seconds_karpenter
   ]
 }
 
-resource "kubernetes_secret" "prometheus_scrape_configs" {
-  metadata {
-    name      = "additional-scrape-configs"
-    namespace = "prometheus"
-  }
-
-  data = {
-    "scrape_configs.yaml" = "${file("${path.module}/prometheus/scrape_configs.yaml")}"
-  }
-
-  type = "Opaque"
-
-  depends_on = [
-    helm_release.prometheus
-  ]
-}
 
 resource "kubectl_manifest" "prometheus_all_pod_monitor" {
 
@@ -102,8 +82,8 @@ YAML
     aws_eks_cluster.eks_cluster,
     aws_eks_node_group.cluster,
     kubernetes_config_map.aws-auth,
-    helm_release.karpenter,
-    time_sleep.wait_15_seconds_karpenter,
+    # helm_release.karpenter,
+    # time_sleep.wait_15_seconds_karpenter,
     helm_release.cilium
   ]
 }
@@ -123,7 +103,7 @@ spec:
       paths:
       - backend:
           service:
-            name: prometheus-prometheus
+            name: prometheus-kube-prometheus-prometheus
             port:
               number: 9090
         path: /
@@ -134,8 +114,8 @@ YAML
     aws_eks_cluster.eks_cluster,
     aws_eks_node_group.cluster,
     kubernetes_config_map.aws-auth,
-    helm_release.karpenter,
-    time_sleep.wait_15_seconds_karpenter,
+    # helm_release.karpenter,
+    # time_sleep.wait_15_seconds_karpenter,
     helm_release.cilium
   ]
 }
