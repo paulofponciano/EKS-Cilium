@@ -109,3 +109,7 @@ grafana:
           lokiSearch: true
         serviceMap:
           datasourceUid: 'prometheus'
+  sidecar:
+    dashboards:
+      enabled: true
+      label: grafana_dashboard

@@ -23,7 +23,6 @@ resource "helm_release" "prometheus" {
   ]
 }
 
-
 resource "kubectl_manifest" "prometheus_all_pod_monitor" {
 
   count = 0
@@ -54,6 +53,34 @@ YAML
   depends_on = [
     helm_release.prometheus
   ]
+}
+
+resource "kubernetes_config_map" "grafana_dashboard_tetragon" {
+  metadata {
+    name = "tetragon-dashboard"
+    namespace = "prometheus"
+    labels = {
+      grafana_dashboard = "1"
+    }
+  }
+
+  data = {
+    "tetragon.json" = file("./prometheus/Tetragon_Events.json")
+  }
+}
+
+resource "kubernetes_config_map" "grafana_dashboard_hubble" {
+  metadata {
+    name = "hubble-l7-http-dashboard"
+    namespace = "prometheus"
+    labels = {
+      grafana_dashboard = "1"
+    }
+  }
+
+  data = {
+    "hubble.json" = file("./prometheus/Hubble_L7_HTTP_Metrics.json")
+  }
 }
 
 resource "kubectl_manifest" "grafana_ingress" {

@@ -1180,6 +1180,24 @@
         "query": "/usr/sbin/runc",
         "skipUrlSync": false,
         "type": "textbox"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "Loki",
+          "value": "loki"
+        },
+        "hide": 0,
+        "includeAll": false,
+        "label": "Loki",
+        "multi": false,
+        "name": "DS_LOKI",
+        "options": [],
+        "query": "loki",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "type": "datasource"
       }
     ]
   },
@@ -1190,7 +1208,7 @@
   "timepicker": {},
   "timezone": "",
   "title": "Tetragon Events",
-  "uid": "f91097b4-d843-42b7-bae1-dcc254742f03",
-  "version": 29,
+  "uid": "f91097b4-d843-42b7-bae1-dcc254742f032",
+  "version": 2,
   "weekStart": ""
 }

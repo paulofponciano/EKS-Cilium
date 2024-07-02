@@ -1672,6 +1672,25 @@
         "skipUrlSync": false,
         "sort": 0,
         "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "Loki",
+          "value": "loki"
+        },
+        "hide": 0,
+        "includeAll": false,
+        "label": "Loki",
+        "multi": false,
+        "name": "DS_LOKI",
+        "options": [],
+        "query": "loki",
+        "queryValue": "",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "type": "datasource"
       }
     ]
   },
@@ -1682,7 +1701,7 @@
   "timepicker": {},
   "timezone": "",
   "title": "Hubble L7 HTTP Metrics by Workload",
-  "uid": "3g264CZVz",
-  "version": 5,
+  "uid": "3g264CZVz34",
+  "version": 1,
   "weekStart": ""
 }
