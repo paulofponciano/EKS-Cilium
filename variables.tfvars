@@ -62,8 +62,8 @@ prometheus_host      = "prometheus.pauloponciano.digital"
 
 ## LOKI / TEMPO OPTIONS
 
-loki_bucket_name  = "loki2-s3-paulop"
-tempo_bucket_name = "tempo2-s3-paulop"
+loki_bucket_name  = "loki-s3-pegasus-cilium"
+tempo_bucket_name = "tempo-s3-pegasus-cilium"
 
 ## NETWORKING
 
