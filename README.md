@@ -10,7 +10,9 @@
     # CILIUM
     # METRICS SERVER
     # EKS ADDONS
-    # KARPENTER
+    # KUBE-PROMETHEUS-STACK
+    # LOKI
+    # TEMPO
 
 > [!NOTE]
 > Para testar o Cilium com todas suas funcionalidades, utilizamos Cilium CNI - Parâmetros no helm [values](./helm_cilium.tf). Removendo o DaemonSet AWS CNI.
