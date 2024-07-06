@@ -28,7 +28,6 @@ enabled_cluster_log_types = [
 addon_csi_version = "v1.32.0-eksbuild.1"
 # addon_cni_version       = "v1.18.2-eksbuild.1"
 addon_coredns_version   = "v1.11.1-eksbuild.9"
-#addon_kubeproxy_version = "v1.30.0-eksbuild.3"
 addon_kubeproxy_version = "v1.29.3-eksbuild.5"
 
 ## INGRESS OPTIONS (CILIUM NLB)
