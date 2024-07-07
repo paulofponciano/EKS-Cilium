@@ -11,6 +11,7 @@
     # METRICS SERVER
     # EKS ADDONS
     # KUBE-PROMETHEUS-STACK
+    # PROMTAIL
     # LOKI
     # TEMPO
 
